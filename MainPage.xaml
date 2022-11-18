@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Title="端口列表"
+             x:Class="ORDU.MainPage">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Spacing="25"
+            Padding="30,0"
+            VerticalOptions="Center">
+
+            <Label
+                Text="欢迎使用"
+                x:Name="Info"
+                SemanticProperties.HeadingLevel="Level1"
+                FontSize="24"
+                x:FieldModifier = "Public"
+                HorizontalOptions="Center" />
+
+            <ListView x:Name="ui_ports_list"
+                      HorizontalOptions="Center"
+                      x:FieldModifier = "Public"
+                      ItemSelected="Ui_ports_list_ItemSelected"
+                      IsVisible="False">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextCell Text="{Binding Port}"
+                      Detail="正在运行"/>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <Button
+                x:Name="ui_new_port"
+                Text="启动端口"
+                Clicked="New_port"
+                HorizontalOptions="Center" />
+
+            <Label
+                SemanticProperties.HeadingLevel="Level1"
+                FontSize="16"
+                x:Name="Coder"
+                HorizontalTextAlignment="Center"
+                HorizontalOptions="Center" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
