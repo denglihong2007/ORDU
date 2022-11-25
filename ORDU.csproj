@@ -19,8 +19,8 @@
 		<ApplicationIdGuid>EA9A2730-9595-4339-ADF0-F9231F7E6A1F</ApplicationIdGuid>
 
 		<!-- Versions -->
-		<ApplicationDisplayVersion>1.2.2</ApplicationDisplayVersion>
-		<ApplicationVersion>5</ApplicationVersion>
+		<ApplicationDisplayVersion>1.2.3</ApplicationDisplayVersion>
+		<ApplicationVersion>6</ApplicationVersion>
 		<WindowsPackageType Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">None</WindowsPackageType>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">10.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">14.0</SupportedOSPlatformVersion>
@@ -37,10 +37,10 @@
 		<AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
 		<GenerateTestArtifacts>True</GenerateTestArtifacts>
 		<HoursBetweenUpdateChecks>24</HoursBetweenUpdateChecks>
-		<Version>1.2.2</Version>
+		<Version>1.2.3</Version>
 		<Title>ORDU</Title>
-		<AssemblyVersion>1.2.2</AssemblyVersion>
-		<FileVersion>1.2.2</FileVersion>
+		<AssemblyVersion>1.2.3</AssemblyVersion>
+		<FileVersion>1.2.3</FileVersion>
 		<PackageIcon>favicon.png</PackageIcon>
 	</PropertyGroup>
 
@@ -63,7 +63,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 	  <PackageReference Include="System.IO.Pipelines" Version="6.0.3" />
 	</ItemGroup>
 
@@ -74,16 +73,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="LogView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="PortManger.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Update="favicon.ico">
-	    <Pack>True</Pack>
-	    <PackagePath>\</PackagePath>
-	  </None>
 	  <None Update="favicon.png">
 	    <Pack>True</Pack>
 	    <PackagePath>\</PackagePath>

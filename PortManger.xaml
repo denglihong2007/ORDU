@@ -10,12 +10,6 @@
             Padding="30,0"
             VerticalOptions="Center">
 
-            <Button
-                x:Name="ui_remove_port"
-                Text="关闭此端口"
-                Clicked="Remove_port"
-                HorizontalOptions="Center" />
-
             <Label
                 HorizontalOptions="Center"
                 Text="玩家列表"
@@ -30,13 +24,18 @@
                 </ListView.ItemTemplate>
             </ListView>
 
-            <Label
+            <Button
+                x:Name="UiLogView"
                 Text="服务日志"
-                HorizontalOptions="Center"
-                FontSize="24"/>
+                Clicked="ShowLog"
+                HorizontalOptions="Center" />
             
-            <Label
-                x:Name="UI_Log"/>
+            <Button
+                x:Name="ui_remove_port"
+                Text="关闭端口"
+                Clicked="Remove_port"
+                HorizontalOptions="Center" />
+
 
         </VerticalStackLayout>
     </ScrollView>

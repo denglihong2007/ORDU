@@ -40,7 +40,8 @@ namespace Orts.MultiPlayerServer
                     Log = "服务开始\n"
                 });
                 Info.Text = "启动成功";
-                while (true)
+                bool run = true;
+                while (run)
                 {
                     try
                     {
@@ -50,7 +51,7 @@ namespace Orts.MultiPlayerServer
                             if (p.Port == port.ToString() && p.Cancellation.IsCancellationRequested)
                             {
                                 listener.Stop();
-                                return;
+                                run = false;
                             }
                         }
                         TcpClient tcpClient = await listener.AcceptTcpClientAsync().ConfigureAwait(false);

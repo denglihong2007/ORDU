@@ -1,53 +1,29 @@
 ﻿using Orts.MultiPlayerServer;
 using System.Collections.ObjectModel;
-using Newtonsoft.Json;
+using System.Net.Sockets;
+using System.Text;
 using System.Net;
 
 namespace ORDU;
 
 public partial class MainPage : ContentPage
 {
-    public static ObservableCollection<Server> servers_list = new();
+    public readonly static ObservableCollection<Server> servers_list = new();
+    public static TcpClient TcpClient = new();
+    readonly string version = "1.2.3";
+    private Socket socket;
+    private byte[] buffer;
     public MainPage()
-	{
-		InitializeComponent();
-        ui_ports_list.ItemsSource = servers_list;
-        string version = "1.2.2";
-        string update;
-        try
-        {
-            Root rb = JsonConvert.DeserializeObject<Root>(MainPage.GetHtml("http://120.48.72.37/ORDU.json"));
-            if (rb.Version != version)
-            {
-                update = " 不是最新版本";
-            }
-            else
-            {
-                update = " 最新版本";
-            }
-        }
-        catch
-        {
-            update = " 检查更新失败";
-        }
-        Coder.Text = "v" + version + update + "\n猪排骨联控小屋 @电排骨\n交流群:1143414240";
-    }
-    public static string GetHtml(string html)
     {
-        string pageHtml = "";
-#pragma warning disable SYSLIB0014
-        //TMD安卓用不了HttpClient，你TM给我报SYSLIB0014
-        WebClient MyWebClient = new();
-        Byte[] pageData = MyWebClient.DownloadData(html);
-        MemoryStream ms = new(pageData);
-        using (StreamReader sr = new(ms))
-        {
-            pageHtml = sr.ReadToEnd();
-        }
-        return pageHtml;
+        InitializeComponent();
+        ui_ports_list.ItemsSource = servers_list;
+        Coder.Text = "v" + version + " 正在连接服务器\n猪排骨联控小屋 @电排骨\n交流群:1143414240";
+        Thread t = new(Recieve);
+        t.Start();
+        Send("GetVersion");
     }
     private async void New_port(object sender, EventArgs e)
-	{
+    {
         string port = "";
         try
         {
@@ -66,7 +42,7 @@ public partial class MainPage : ContentPage
                 {
                     throw new Exception();
                 }
-                Host server = new(int.Parse(port),Info);
+                Host server = new(int.Parse(port), Info);
                 Task serverTask = server.Run();
                 if (servers_list.Count == 0)
                 {
@@ -86,15 +62,63 @@ public partial class MainPage : ContentPage
             }
         }
     }
-    public class Root
+    bool SendAvailable = false;
+    bool FailedToConnectToServer = false;
+    public void Recieve()
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        public string Version { get; set; }
-
+        socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        buffer = new byte[1024];
+        IPAddress ip = IPAddress.Parse("120.48.72.37");
+        IPEndPoint point = new(ip, 86);
+        IAsyncResult connResult = socket.BeginConnect(point, null, null);
+        connResult.AsyncWaitHandle.WaitOne(1000, true);  //等待2秒
+        if (!connResult.IsCompleted)
+        {
+            socket.Close();
+            FailedToConnectToServer = true;
+        }
+        else
+        {
+            SendAvailable = true;
+            while (true)
+            {
+                int length = socket.Receive(buffer);
+                string message = Encoding.UTF8.GetString(buffer, 0, length);//字节转换为字符串
+                MessageDeal(message);//消息处理
+            }
+        }
     }
-
+    public void Send(string message)
+    {
+        while (true)
+        {
+            if (SendAvailable)
+            {
+                socket.Send(Encoding.UTF8.GetBytes(message));
+                break;
+            }
+            else if (FailedToConnectToServer)
+            {
+                Coder.Text = "v" + version + " 连接服务器失败\n猪排骨联控小屋 @电排骨\n交流群:1143414240";
+                break;
+            }
+        }
+    }
+    public void MessageDeal(string message)
+    {
+        if (message.Contains("Version"))
+        {
+            string GetVersion = message[(message.IndexOf(":") + 1)..];
+            if (GetVersion == version)
+            {
+                Coder.Text = "v" + version + " 最新版本\n猪排骨联控小屋 @电排骨\n交流群:1143414240";
+            }
+            else
+            {
+                Coder.Text = "v" + version + " 有新版本\n猪排骨联控小屋 @电排骨\n交流群:1143414240";
+            }
+        }
+    }
     private async void Ui_ports_list_ItemSelected(object sender, SelectedItemChangedEventArgs e)
     {
         if (ui_ports_list.SelectedItem != null)
@@ -103,7 +127,7 @@ public partial class MainPage : ContentPage
             {
                 if (p.Port == ((Server)ui_ports_list.SelectedItem).Port)
                 {
-                    await Navigation.PushAsync(new PortManger(((Server)ui_ports_list.SelectedItem).Port,ui_ports_list));
+                    await Navigation.PushAsync(new PortManger(((Server)ui_ports_list.SelectedItem).Port, ui_ports_list));
                     ui_ports_list.SelectedItem = null;
                     break;
                 }
@@ -118,5 +142,5 @@ public class Server
     public ObservableCollection<string> Players { get { return players; } set { } }
     public string Log { get; set; }
     public CancellationTokenSource Cancellation { get; set; }
-    private ObservableCollection<string> players = new();
+    private readonly ObservableCollection<string> players = new();
 }

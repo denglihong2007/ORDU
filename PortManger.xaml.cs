@@ -15,8 +15,6 @@ public partial class PortManger : ContentPage
             if (p.Port == Server)
             {
                 UI_Players_List.ItemsSource = p.Players;
-                UI_Log.SetBinding(Label.TextProperty,"Log");
-                UI_Log.BindingContext = p;
                 break;
             }
         }
@@ -44,8 +42,20 @@ public partial class PortManger : ContentPage
                     break;
                 }
             }
-#pragma warning disable CS4014
-            Navigation.PopAsync();
+            await Navigation.PopAsync();
         }
+    }
+
+    private async void ShowLog(object sender, EventArgs e)
+    {
+        foreach (Server p in MainPage.servers_list)
+        {
+            if (p.Port == Server)
+            {
+                await Navigation.PushAsync(new LogView(Server));
+                break;
+            }
+        }
+        
     }
 }
