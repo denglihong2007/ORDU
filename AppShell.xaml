@@ -7,8 +7,7 @@
     Shell.FlyoutBehavior="Disabled">
 
     <ShellContent
-        Title="服务端管理"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+        ContentTemplate="{DataTemplate local:ServerManger}"
+        Route="ServerManger" />
 
 </Shell>

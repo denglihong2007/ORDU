@@ -2,19 +2,18 @@ namespace ORDU;
 
 public partial class LogView : ContentPage
 {
-	public LogView(string Server)
-	{
-		InitializeComponent();
+    public LogView(string Server)
+    {
+        InitializeComponent();
         Title = "查看日志" + Server;
-        foreach (Server p in MainPage.servers_list)
+        HttpClient httpClient = new();
+        try
         {
-            if (p.Port == Server)
-            {
-
-                UILog.SetBinding(Label.TextProperty, "Log");
-                UILog.BindingContext = p;
-                break;
-            }
+            UILog.Text = httpClient.GetStringAsync("http://120.48.72.37/" + Server + ".txt").Result;
+        }
+        catch
+        {
+            UILog.Text = "服务开始";
         }
     }
 }

@@ -1,46 +1,57 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             Title="端口列表"
-             x:Class="ORDU.MainPage">
+             Title="服务器列表"
+             x:FieldModifier = "Public"
+             x:Class="ORDU.ServerManger">
 
     <ScrollView>
         <VerticalStackLayout
             Spacing="25"
+            x:FieldModifier = "Public"
             Padding="30,0"
             VerticalOptions="Center">
 
             <Label
                 Text="欢迎使用"
-                x:Name="Info"
+                x:Name="UIInfo"
                 SemanticProperties.HeadingLevel="Level1"
                 FontSize="24"
                 x:FieldModifier = "Public"
                 HorizontalOptions="Center" />
 
-            <ListView x:Name="ui_ports_list"
+            <ListView x:Name="UIServersList"
                       HorizontalOptions="Center"
                       x:FieldModifier = "Public"
-                      ItemSelected="Ui_ports_list_ItemSelected"
+                      ItemSelected="UIServersListItemSelected"
                       IsVisible="False">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <TextCell Text="{Binding Port}"
+                        <TextCell Text="{Binding IP}"
                       Detail="正在运行"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
 
             <Button
-                x:Name="ui_new_port"
+                x:Name="UINewServer"
                 Text="启动端口"
-                Clicked="New_port"
+                x:FieldModifier = "Public"
+                Clicked="UINewServerClick"
+                HorizontalOptions="Center" />
+            
+            <Button
+                x:Name="UIRefreshList"
+                Text="刷新列表"
+                x:FieldModifier = "Public"
+                Clicked="UIRefreshListClick"
                 HorizontalOptions="Center" />
 
             <Label
                 SemanticProperties.HeadingLevel="Level1"
                 FontSize="16"
-                x:Name="Coder"
+                x:Name="UICoder"
+                x:FieldModifier = "Public"
                 HorizontalTextAlignment="Center"
                 HorizontalOptions="Center" />
 
