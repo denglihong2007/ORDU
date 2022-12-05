@@ -19,8 +19,8 @@
 		<ApplicationIdGuid>EA9A2730-9595-4339-ADF0-F9231F7E6A1F</ApplicationIdGuid>
 
 		<!-- Versions -->
-		<ApplicationDisplayVersion>1.3.0</ApplicationDisplayVersion>
-		<ApplicationVersion>7</ApplicationVersion>
+		<ApplicationDisplayVersion>1.3.1</ApplicationDisplayVersion>
+		<ApplicationVersion>8</ApplicationVersion>
 		<WindowsPackageType Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">None</WindowsPackageType>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
@@ -34,10 +34,10 @@
 		<AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
 		<GenerateTestArtifacts>True</GenerateTestArtifacts>
 		<HoursBetweenUpdateChecks>24</HoursBetweenUpdateChecks>
-		<Version>1.3.0</Version>
+		<Version>1.3.1</Version>
 		<Title>ORDU</Title>
-		<AssemblyVersion>1.3.0</AssemblyVersion>
-		<FileVersion>1.3.0</FileVersion>
+		<AssemblyVersion>1.3.1</AssemblyVersion>
+		<FileVersion>1.3.1</FileVersion>
 		<PackageIcon>favicon.png</PackageIcon>
 	</PropertyGroup>
 
@@ -47,7 +47,6 @@
 		<!-- Splash Screen -->
 		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
 		<!-- Images -->
-		<MauiImage Include="Resources\Images\*" />
 		<!-- Custom Fonts -->
 		<MauiFont Include="Resources\Fonts\*" />
 
@@ -81,8 +80,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Microsoft.AppCenter.Analytics" Version="5.0.0" />
-	  <PackageReference Include="Microsoft.AppCenter.Crashes" Version="5.0.0" />
+	  <PackageReference Include="Microsoft.AppCenter.Analytics" Version="5.0.1" />
+	  <PackageReference Include="Microsoft.AppCenter.Crashes" Version="5.0.1" />
 	  <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
 	</ItemGroup>
 

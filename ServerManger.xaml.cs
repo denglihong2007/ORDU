@@ -1,15 +1,24 @@
-﻿namespace ORDU;
+﻿using System.Collections.ObjectModel;
+
+namespace ORDU;
 
 public partial class ServerManger : ContentPage
 {
+    public ObservableCollection<string> ServersList = new();
+    private readonly ManualResetEvent ManualResetEvent = new(false);
     public ServerManger()
     {
         InitializeComponent();
-        CoreService.serverManger = this;
+        NetworkService.serverManger = this;
         Thread.Sleep(350);
-        CoreService.Send("GetVersion");
+        NetworkService.Send("GetVersion");
+        Thread t = new(GetServersList)
+        {
+            IsBackground = true
+        };
+        t.Start();
     }
-    public async void UINewServerClick(object sender, EventArgs e)
+    private async void UINewServerClick(object sender, EventArgs e)
     {
         string port = "";
         try
@@ -19,7 +28,7 @@ public partial class ServerManger : ContentPage
             {
                 throw new Exception();
             }
-            CoreService.Send("NewServer:" + port);
+            NetworkService.Send("NewServer:" + port);
         }
         catch
         {
@@ -29,23 +38,31 @@ public partial class ServerManger : ContentPage
             }
         }
     }
-    public async void UIServersListItemSelected(object sender, SelectedItemChangedEventArgs e)
+    private async void UIServersListItemSelected(object sender, SelectedItemChangedEventArgs e)
     {
         if (UIServersList.SelectedItem != null)
         {
-            foreach (Server p in CoreService.ServersList)
-            {
-                if (p.Port == ((Server)UIServersList.SelectedItem).Port)
-                {
-                    await Navigation.PushAsync(new ServerOperator(((Server)UIServersList.SelectedItem).Port));
-                    UIServersList.SelectedItem = null;
-                    break;
-                }
-            }
+            await Navigation.PushAsync(new ServerOperator((string)UIServersList.SelectedItem));
+            UIServersList.SelectedItem = null;
         }
     }
-    private void UIRefreshListClick(object sender, EventArgs e)
+    private void GetServersList()
     {
-        CoreService.Send("GetServers");
+        while (true)
+        {
+            Thread.Sleep(3500);
+            NetworkService.Send("GetServersList");
+            ManualResetEvent.WaitOne(Timeout.Infinite);
+        }
+    }
+    protected override void OnAppearing()
+    {
+        ManualResetEvent.Set();
+        base.OnAppearing();
+    }
+    protected override void OnDisappearing()
+    {
+        ManualResetEvent.Reset();
+        base.OnDisappearing();
     }
 }

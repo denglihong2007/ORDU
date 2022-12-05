@@ -1,48 +1,61 @@
+using System.Collections.ObjectModel;
+
 namespace ORDU;
 
 public partial class ServerOperator : ContentPage
 {
 	private readonly string Server;
-	public ServerOperator(string Server)
+    public ObservableCollection<string> PlayersList = new();
+    private readonly ManualResetEvent ManualResetEvent = new(false);
+    public ServerOperator(string Server)
 	{
 		InitializeComponent();
 		Title = "管理服务器" + Server;
 		this.Server = Server;
-        foreach (Server p in CoreService.ServersList)
+        Thread t = new(GetServerDetails)
         {
-            if (p.Port == Server)
-            {
-                UI_Players_List.ItemsSource = p.Players;
-                break;
-            }
-        }
+            IsBackground = true
+        };
+        t.Start();
+        NetworkService.serverOperator = this;
     }
-
-	private async void Remove_port(object sender, EventArgs e)
+	private async void StopServer(object sender, EventArgs e)
 	{
-        bool answer = await DisplayAlert("是否确认","您确定要关闭此端口", "是", "否");
+        bool answer = await DisplayAlert("是否确认","您确定要关闭此服务器", "是", "否");
         if (answer)
         {
-            CoreService.Send("StopServer:" + Server);
+            NetworkService.Send("StopServer:" + Server);
             await Navigation.PopAsync();
         }
     }
-
     private async void ShowLog(object sender, EventArgs e)
     {
-        foreach (Server p in CoreService.ServersList)
-        {
-            if (p.Port == Server)
-            {
-                await Navigation.PushAsync(new LogView(Server));
-                break;
-            }
-        }
-        
+        await Navigation.PushAsync(new LogView(Server));
     }
-
-    private void UIRefreshListClick(object sender, EventArgs e)
+    private void ChangeDispatcher(object sender, EventArgs e)
     {
-        CoreService.Send("GetServers");
+        if (UIPlayersList.SelectedItem != null)
+        {
+            NetworkService.Send("ChangeDispatcher:" + Server + UIPlayersList.SelectedItem);
+        }
+    }
+    private void GetServerDetails()
+    {
+        while (true)
+        {
+            NetworkService.Send("GetServerDetails:" + Server);
+            ManualResetEvent.WaitOne(Timeout.Infinite);
+            Thread.Sleep(3500);
+        }
+    }
+    protected override void OnAppearing()
+    {
+        ManualResetEvent.Set();
+        base.OnAppearing();
+    }
+    protected override void OnDisappearing()
+    {
+        ManualResetEvent.Reset();
+        base.OnDisappearing();
     }
 }

@@ -15,8 +15,10 @@
                 Text="玩家列表"
                 FontSize="24"/>
 
-            <ListView x:Name="UI_Players_List"
-                      HorizontalOptions="Center">
+            <ListView
+                x:Name="UIPlayersList"
+                x:FieldModifier = "Public"
+                HorizontalOptions="Center">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <TextCell Text="{Binding .}"/>
@@ -24,25 +26,38 @@
                 </ListView.ItemTemplate>
             </ListView>
 
-            <Button
-                x:Name="UIRefreshList"
-                Text="刷新列表"
+            <Label
+                SemanticProperties.HeadingLevel="Level1"
+                x:Name="UIDispatcher"
                 x:FieldModifier = "Public"
-                Clicked="UIRefreshListClick"
+                HorizontalTextAlignment="Center"
                 HorizontalOptions="Center" />
-            
-            <Button
-                x:Name="UiLogView"
+
+            <HorizontalStackLayout
+                HorizontalOptions="Center"
+                Spacing="25"
+                Padding="30,0"
+                VerticalOptions="Center">
+
+                <Button
+                x:Name="UIChangeDispatcher"
+                Text="更改调度"
+                Clicked="ChangeDispatcher"
+                HorizontalOptions="Center" />
+
+                <Button
+                x:Name="UILogView"
                 Text="服务日志"
                 Clicked="ShowLog"
                 HorizontalOptions="Center" />
-            
-            <Button
-                x:Name="ui_remove_port"
-                Text="关闭端口"
-                Clicked="Remove_port"
-                HorizontalOptions="Center" />
 
+            </HorizontalStackLayout>
+
+            <Button
+                x:Name="UIStopServer"
+                Text="关闭服务器"
+                Clicked="StopServer"
+                HorizontalOptions="Center" />
 
         </VerticalStackLayout>
     </ScrollView>

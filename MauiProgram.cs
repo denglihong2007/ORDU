@@ -18,7 +18,7 @@ public static class MauiProgram
         AppCenter.Start("android=d97ecf82-6261-4eb1-89c8-82000ea09ef5;" +
                       "windowsdesktop=1a058cbd-d729-47d3-a886-1f6f4f3df211;",
                       typeof(Analytics), typeof(Crashes));
-        CoreService.Start();
+        NetworkService.Start();
         return builder.Build();
 	}
 }
