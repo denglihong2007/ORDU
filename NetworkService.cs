@@ -4,7 +4,6 @@ using Newtonsoft.Json;
 using System.Net.Sockets;
 using System.Collections.ObjectModel;
 using Newtonsoft.Json.Linq;
-using System.Diagnostics;
 
 namespace ORDU
 {
@@ -39,12 +38,7 @@ namespace ORDU
         {
             socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             buffer = new byte[1024];
-            IPAddress ip;
-#if DEBUG
-            ip = IPAddress.Parse("127.0.0.1");
-#else
-            ip = IPAddress.Parse("120.48.72.37");
-#endif
+            IPAddress ip = IPAddress.Parse("120.48.72.37");
             IPEndPoint point = new(ip, 86);
             IAsyncResult connResult = socket.BeginConnect(point, null, null);
             connResult.AsyncWaitHandle.WaitOne(300, true);
@@ -73,6 +67,10 @@ namespace ORDU
                         {
                             serverManger.UICoder.Text = "v" + Version + " 有新版本：v" + GetVersion + "\n猪排骨联控小屋 @电排骨\n交流群:1143414240";
                         }
+                        if (DeviceInfo.Current.Platform == DevicePlatform.Android)
+                        {
+                            serverManger.UICoder.Text += "\n\nAndroid版特别提示\n点击“启动端口”再直接点击“OK”以更新列表";
+                        }
                     }
                     else if (message.Contains("ServersList"))
                     {
@@ -87,9 +85,13 @@ namespace ORDU
                             }
                             else
                             {
-                                serverManger.ServersList = JsonConvert.DeserializeObject<ObservableCollection<string>>(message[(message.IndexOf(":") + 1)..]);
                                 safeWrite = delegate
                                 {
+                                    serverManger.ServersList.Clear();
+                                    foreach (string i in JsonConvert.DeserializeObject<List<string>>(message[(message.IndexOf(":") + 1)..]))
+                                    {
+                                        serverManger.ServersList.Add(i);
+                                    }
                                     serverManger.UIServersList.ItemsSource = serverManger.ServersList;
                                     serverManger.UIServersList.IsVisible = true;
                                 };
@@ -139,30 +141,23 @@ namespace ORDU
                     }
                     else if (message.Contains("ServerDetails"))
                     {
-                        JObject obj = JObject.Parse(message[(message.IndexOf(":") + 1)..]);
-                        if (serverOperator.PlayersList.Count != ((JArray)obj["Players"]).ToObject<ObservableCollection<string>>().Count)
-                        {
-                            if (((JArray)obj["Players"]).ToObject<ObservableCollection<string>>().Count == 0)
-                            {
-                                safeWrite = delegate
-                                {
-                                    serverOperator.UIPlayersList.IsVisible = false;
-                                };
-                            }
-                            else
-                            {
-                                serverOperator.PlayersList = ((JArray)obj["Players"]).ToObject<ObservableCollection<string>>();
-                                safeWrite = delegate
-                                {
-                                    serverOperator.UIPlayersList.ItemsSource = serverOperator.PlayersList;
-                                    serverOperator.UIPlayersList.IsVisible = true;
-                                };
-                            }
-                            MainThread.BeginInvokeOnMainThread(safeWrite);
-                        }
                         safeWrite = delegate
                         {
-
+                            JObject obj = JObject.Parse(message[(message.IndexOf(":") + 1)..]);
+                            if (((JArray)obj["Players"]).ToObject<ObservableCollection<string>>().Count == 0)
+                            {
+                                serverOperator.UIPlayersList.IsVisible = false;
+                            }
+                            else if (serverOperator.PlayersList.Count != ((JArray)obj["Players"]).ToObject<ObservableCollection<string>>().Count)
+                            {
+                                serverOperator.UIPlayersList.ItemsSource = serverOperator.PlayersList;
+                                serverOperator.PlayersList.Clear();
+                                foreach (string i in ((JArray)obj["Players"]).ToObject<List<string>>())
+                                {
+                                    serverOperator.PlayersList.Add(i);
+                                }
+                                serverOperator.UIPlayersList.IsVisible = true;
+                            }
                             string Dispatcher = obj["Dispatcher"].ToString();
                             if (Dispatcher != "" && Dispatcher.Length <= 5)
                             { 

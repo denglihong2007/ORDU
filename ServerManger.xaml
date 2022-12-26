@@ -27,8 +27,9 @@
                       IsVisible="False">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <TextCell Text="{Binding ., StringFormat='120.48.72.37:{0:C}'}"
-                      Detail="正在运行"/>
+                        <TextCell 
+                            Text="{Binding ., StringFormat='120.48.72.37:{0:C}'}"
+                            Detail="正在运行"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>

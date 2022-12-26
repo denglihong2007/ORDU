@@ -36,8 +36,8 @@
 		<HoursBetweenUpdateChecks>24</HoursBetweenUpdateChecks>
 		<Version>1.3.1</Version>
 		<Title>ORDU</Title>
-		<AssemblyVersion>1.3.1</AssemblyVersion>
-		<FileVersion>1.3.1</FileVersion>
+		<AssemblyVersion></AssemblyVersion>
+		<FileVersion></FileVersion>
 		<PackageIcon>favicon.png</PackageIcon>
 	</PropertyGroup>
 
@@ -90,6 +90,7 @@
 	  <AndroidSigningStorePass>gy8213434</AndroidSigningStorePass>
 	  <AndroidSigningKeyPass>gy8213434</AndroidSigningKeyPass>
 	  <AndroidSigningKeyAlias>DengLihong</AndroidSigningKeyAlias>
+	  <EnableLLVM>True</EnableLLVM>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-android33.0|AnyCPU'">
@@ -97,6 +98,7 @@
 	  <AndroidSigningStorePass>gy8213434</AndroidSigningStorePass>
 	  <AndroidSigningKeyPass>gy8213434</AndroidSigningKeyPass>
 	  <AndroidSigningKeyAlias>DengLihong</AndroidSigningKeyAlias>
+	  <EnableLLVM>True</EnableLLVM>
 	</PropertyGroup>
 
 	<ProjectExtensions><VisualStudio><UserProperties XamarinHotReloadDebuggerTimeoutExceptionORDUHideInfoBar="True" /></VisualStudio></ProjectExtensions>
